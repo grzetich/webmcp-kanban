@@ -272,6 +272,19 @@ LLM calls create_card   -->  MCP Server -->  POST /api/cards  -->  Backend
 
 The MCP server contains no business logic. It is a protocol adapter: JSON-RPC in, HTTP out. The backend owns validation, persistence, and business rules. The app works without MCP.
 
+For a concrete example, the [ai-developer-tools-mcp](https://github.com/grzetich/ai-developer-tools-mcp) project demonstrates this pattern: a ~200-line MCP server wraps an existing REST API for AI developer tool analytics. The API handles authentication, rate limiting, and data queries. The MCP server just translates tool calls into `fetch()` requests and formats the JSON responses for Claude. The API has no idea it is being called by an LLM -- and that is the point.
+
+The structural parallel to this kanban board is exact:
+
+| | ai-developer-tools-mcp | webmcp-kanban |
+|---|---|---|
+| App | REST API (data platform) | React app (kanban board) |
+| Bridge | MCP server (~200 lines) | WebMCPTools.jsx + Chrome DevTools MCP |
+| Bridge's job | Tool calls → HTTP requests | Tool calls → `dispatch()` to React state |
+| App changes needed | None | None |
+
+Same pattern, different transport. One goes over HTTP to a backend. The other goes directly into browser state.
+
 ### MCP-Native Apps
 
 In an MCP-native app, the MCP server *is* the application. There is no separate REST API -- the tools, resources, and prompts defined in MCP are the primary interface. Any UI built on top calls through MCP, not around it.
