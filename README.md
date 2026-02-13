@@ -101,12 +101,9 @@ The AI agent and the user operate on the same React state. When Claude creates a
 - [@mcp-b/react-webmcp](https://www.npmjs.com/package/@mcp-b/react-webmcp) (useWebMCP hook + Zod schemas)
 - [zod](https://www.npmjs.com/package/zod) (tool parameter validation)
 
-## Blog Series
+## Blog Post
 
-1. [Why a Kanban Board is the Perfect WebMCP Demo](./docs/blog-webmcp-kanban-why.md)
-2. [Building a WebMCP Kanban Board: From React State to AI-Callable Tools](./docs/blog-webmcp-kanban-implementation.md)
-3. [What This Would Look Like With Traditional MCP](./docs/blog-webmcp-kanban-vs-traditional.md)
-4. [Connecting Claude to Your WebMCP App via Chrome DevTools MCP](./docs/blog-webmcp-kanban-bridge.md)
+[Building a WebMCP Kanban Board: Browser-Native AI Integration With Zero Backend](./docs/blog-webmcp-kanban.md)
 
 ## Credits
 
