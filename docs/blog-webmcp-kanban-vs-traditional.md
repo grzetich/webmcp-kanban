@@ -257,6 +257,45 @@ WebMCP is the right choice when the AI agent should interact with the same appli
 
 ---
 
+## MCP as Adapter vs. MCP-Native Apps
+
+The comparison above focuses on *where* the MCP server runs (stdio process vs. browser). But there is a second, orthogonal question: what role does MCP play in the architecture?
+
+### MCP as an Adapter Layer
+
+This is the traditional approach described in this post. You have a backend with an API, a frontend with a UI, and the MCP server is a thin translation layer that converts tool calls into API requests. The backend does not know or care whether a request came from a user clicking a button or an LLM invoking a tool -- it receives the same `POST /api/cards` either way.
+
+```
+User clicks "Add Card"  -->  Frontend  -->  POST /api/cards  -->  Backend
+LLM calls create_card   -->  MCP Server -->  POST /api/cards  -->  Backend
+```
+
+The MCP server contains no business logic. It is a protocol adapter: JSON-RPC in, HTTP out. The backend owns validation, persistence, and business rules. The app works without MCP.
+
+### MCP-Native Apps
+
+In an MCP-native app, the MCP server *is* the application. There is no separate REST API -- the tools, resources, and prompts defined in MCP are the primary interface. Any UI built on top calls through MCP, not around it.
+
+This pattern makes sense for tools designed primarily for LLM consumption: code analysis tools, data pipelines, documentation generators, dev tooling. The LLM is the intended user, and a traditional web UI is secondary or nonexistent.
+
+### Comparison
+
+| | MCP as Adapter | MCP-Native App |
+|---|---|---|
+| Existing app? | Drop-in, no refactor needed | Built from scratch for MCP |
+| Primary UI | Web interface for humans | LLM is the primary consumer |
+| Without an LLM | Fully functional | Limited or unusable |
+| Architecture | Two layers (API + MCP) | Single layer (MCP is the API) |
+| Complexity | More moving parts, but decoupled | Simpler, but tightly coupled to MCP |
+
+### Where WebMCP Fits
+
+WebMCP is a third option that sidesteps this distinction entirely. There is no adapter layer because there is no backend to adapt. There is no MCP-native app because the browser *is* the app. The tools write directly to the same state the user sees.
+
+If your application already has a backend API, the adapter pattern is the pragmatic choice -- the MCP server is a thin bridge and you get LLM access with minimal effort. If you are building something new that is meant to be consumed by LLMs, an MCP-native app keeps the architecture simple. And if the user and the agent are looking at the same screen, operating on the same state in real time, WebMCP eliminates both patterns and their associated complexity.
+
+---
+
 ## Conclusion
 
 For a single-user tool where the agent and user share the same context, WebMCP eliminates an enormous amount of accidental complexity. The traditional approach turns a 200-line integration into a 500+ line multi-process system with a sync problem to solve.
