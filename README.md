@@ -103,7 +103,7 @@ The AI agent and the user operate on the same React state. When Claude creates a
 
 ## Blog Post
 
-[Building a WebMCP Kanban Board: Browser-Native AI Integration With Zero Backend](./docs/blog-webmcp-kanban.md)
+[Building a WebMCP Kanban Board: Browser-Native AI Integration With Zero Backend](https://grzeti.ch/blog/webmcp-kanban.html)
 
 ## Credits
 
