@@ -32,17 +32,29 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "chrome-devtools": {
       "command": "npx",
-      "args": ["-y", "@mcp-b/chrome-devtools-mcp@latest"]
+      "args": ["-y", "@mcp-b/chrome-devtools-mcp@latest", "--channel", "stable"]
     }
   }
 }
 ```
 
+> **Note:** The `--channel stable` flag tells the MCP server to use your regular Chrome installation. Without it, the server looks for Chrome Dev channel, which most people don't have installed. If you use Chrome Canary or Beta, replace `stable` with `canary` or `beta`.
+
+Restart Claude Desktop after editing the config.
+
 ### Workflow
 
-1. Run `npm run dev` to start the kanban board
-2. Open http://localhost:5174 in Chrome
+1. Run `npm run dev` to start the kanban board (or use the [live deployment](https://webmcp-kanban.vercel.app))
+2. Open Claude Desktop and ask it to navigate to your kanban board URL
 3. Ask Claude to interact with the board
+
+**Important:** The MCP server launches and controls its own Chrome window. This is the window where you'll see the board and watch cards appear in real time. If you have Chrome already open, the MCP-controlled window will be a separate instance — make sure you're watching that window, not your regular browser.
+
+To start, tell Claude:
+
+> "Navigate to http://localhost:5174 and list the WebMCP tools"
+
+Claude will call `list_webmcp_tools` and discover all 8 kanban tools. Then you can ask it to interact with the board naturally.
 
 Claude uses two bridge tools to reach your app:
 
