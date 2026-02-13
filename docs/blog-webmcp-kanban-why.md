@@ -123,6 +123,42 @@ The first five are standard CRUD operations. The last three -- `add_label`, `get
 
 ---
 
+## A Retrofit Path for Existing React Apps
+
+Everything described in this post -- tool registration, shared state, instant UI feedback -- was built alongside the kanban board. But it didn't have to be.
+
+The kanban board's WebMCP integration lives in a single file: `WebMCPTools.jsx`. That file reads state through `useBoardState()` and writes state through `dispatch()` -- the same hooks the UI components use. It does not modify the board's reducer, its components, or its persistence logic. If you deleted `WebMCPTools.jsx`, the kanban board would still work exactly as before. If you added it back, the board would become AI-accessible again. The app itself never changes.
+
+This pattern generalizes to any React application that manages state through hooks.
+
+**If your app uses Context + useReducer**, you write tool handlers that call `dispatch()` with the same action types your components already use. The reducer doesn't know or care that the action came from an AI agent instead of a button click.
+
+**If your app uses Redux**, the tool handlers call `store.dispatch()`. The reducers, middleware, and selectors all work unchanged.
+
+**If your app uses Zustand, Jotai, or any hook-based store**, the tool handlers call the same setter functions your components call.
+
+The integration is always the same shape: a new file that imports the existing store, registers tools against `navigator.modelContext`, and maps each tool to a read or write operation the app already supports. No refactoring. No new API layer. No changes to existing components.
+
+```mermaid
+graph TD
+    subgraph "Existing React App (unchanged)"
+        Store["State Management<br/>(Context, Redux, Zustand, etc.)"]
+        UI["UI Components"]
+        UI <-->|"existing hooks"| Store
+    end
+
+    subgraph "New File"
+        Tools["WebMCPTools.jsx"]
+    end
+
+    Tools -->|"same hooks"| Store
+    Agent["AI Agent"] <-->|"navigator.modelContext"| Tools
+```
+
+For teams with large, established React applications, this is the key takeaway: WebMCP is not a rewrite. It is one file that gives an LLM the same access your components already have. The app keeps working for users who never interact with an AI agent. But for those who do, every action the UI supports is now a tool an agent can call.
+
+---
+
 ## Conclusion
 
 This demo was chosen to maximize the *demonstrable impact* of WebMCP. The board is visual enough that you can see the agent's actions in real time. It is stateful enough that the tools compose into meaningful multi-step workflows. And it is simple enough that the entire application runs in the browser without a backend.
